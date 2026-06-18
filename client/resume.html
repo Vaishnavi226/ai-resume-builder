@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder - NextHire</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  
+  <header></header>
+
+  <div class="main-container">
+    <div class="builder-header">
+      <div class="builder-title">
+        <h1>ATS-Optimized Resume Builder</h1>
+        <p>Input your credentials, optimize with AI, and compile directly to LaTeX PDF.</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-secondary" id="checkAtsBtn">Check ATS Score</button>
+        <button class="btn btn-outline" id="btn-save-resume">Save Data</button>
+        <button class="btn btn-primary" id="btn-compile-pdf">
+          <span>Export PDF</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ATS Compatibility Score Panel -->
+    <div id="atsScorePanel" class="card" style="display:none; margin-bottom: 20px; padding: 24px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+        
+        <!-- Score Circle & Breakdown -->
+        <div style="flex: 1 1 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid var(--card-border); padding-right: 24px; min-width: 200px;">
+          <h3 style="font-size: 0.82rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 15px; text-align: center; font-weight: 600; letter-spacing: 0.5px;">ATS Match Score</h3>
+          <div class="ats-circle-container" style="position: relative; width: 120px; height: 120px;">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle stroke="var(--card-border)" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+              <circle id="atsProgressCircle" stroke="var(--error-color)" stroke-width="8" fill="transparent" r="50" cx="60" cy="60" stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+            </svg>
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1;">
+              <span id="atsFinalScore" style="font-size: 2.2rem; font-weight: 700; color: var(--text-primary);">0</span>
+              <small style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Match</small>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 15px; margin-top: 20px; font-size: 0.8rem; text-align: center; width: 100%; justify-content: space-around;">
+            <div>
+              <div id="atsRuleScore" style="font-weight: 700; color: var(--text-primary); font-size: 1.1rem;">0/100</div>
+              <div style="color: var(--text-secondary); font-size: 0.75rem;">Rule Score (40%)</div>
+            </div>
+            <div style="border-left: 1px solid var(--card-border); height: 30px;"></div>
+            <div>
+              <div id="atsAiScore" style="font-weight: 700; color: var(--text-primary); font-size: 1.1rem;">0/100</div>
+              <div style="color: var(--text-secondary); font-size: 0.75rem;">AI Score (60%)</div>
+            </div>
+          </div>
+          
+          <div id="atsOfflineAlert" style="display: none; margin-top: 15px; padding: 8px 12px; background: #fffbeb; border: 1px solid #fef3c7; border-radius: 6px; color: #b45309; font-size: 0.75rem; line-height: 1.4; text-align: center; width: 100%;">
+            ⚠️ AI analysis unavailable. Using rule-based scoring.
+          </div>
+        </div>
+        
+        <!-- Checklist & Actionable Feedback -->
+        <div style="flex: 2 1 350px; min-width: 300px; width: 100%;">
+          
+          <!-- Keywords Section -->
+          <div id="atsKeywordsSection" style="margin-bottom: 20px; display: none;">
+            <h4 style="font-size: 0.88rem; color: var(--text-primary); margin-bottom: 8px; font-weight: 600;">Missing Keywords</h4>
+            <div id="atsMissingKeywords" class="skills-tags" style="gap: 6px; display: flex; flex-wrap: wrap;">
+              <!-- Pill tags here -->
+            </div>
+          </div>
+          
+          <!-- Strengths Section -->
+          <div id="atsStrengthsSection" style="margin-bottom: 20px; display: none;">
+            <h4 style="font-size: 0.88rem; color: var(--text-primary); margin-bottom: 8px; font-weight: 600;">Strengths</h4>
+            <ul id="atsStrengths" style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: #10B981; line-height: 1.5; list-style-type: disc;">
+              <!-- List of strengths -->
+            </ul>
+          </div>
+
+          <!-- Actionable suggestions / failures -->
+          <div class="breakdown" style="width: 100%;">
+            <h4 style="font-size: 0.88rem; color: var(--text-primary); margin-bottom: 8px; font-weight: 600;">Improvement Tips</h4>
+            <ul id="atsSuggestions" style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; display: flex; flex-direction: column; gap: 8px;">
+              <!-- List of suggestions -->
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="resume-card">
+      <div class="resume-tabs">
+        <button class="resume-tab-btn active" data-tab="tab-personal">1. Personal Info</button>
+        <button class="resume-tab-btn" data-tab="tab-summary">2. Summary & Target JD</button>
+        <button class="resume-tab-btn" data-tab="tab-experience">3. Experience</button>
+        <button class="resume-tab-btn" data-tab="tab-education-skills">4. Education & Skills</button>
+        <button class="resume-tab-btn" data-tab="tab-projects">5. Projects</button>
+      </div>
+
+      <!-- Tab 1: Personal Info -->
+      <div class="resume-tab-pane active" id="tab-personal">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label for="p-fullname">Full Name</label>
+            <input type="text" id="p-fullname" placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label for="p-email">Email Address</label>
+            <input type="email" id="p-email" placeholder="john.doe@example.com">
+          </div>
+          <div class="form-group">
+            <label for="p-phone">Phone Number</label>
+            <input type="tel" id="p-phone" placeholder="+1 (555) 019-2834">
+          </div>
+          <div class="form-group">
+            <label for="p-location">Location</label>
+            <input type="text" id="p-location" placeholder="New York, NY">
+          </div>
+          <div class="form-group">
+            <label for="p-linkedin">LinkedIn (e.g. linkedin.com/in/johndoe)</label>
+            <input type="text" id="p-linkedin" placeholder="linkedin.com/in/johndoe">
+          </div>
+          <div class="form-group">
+            <label for="p-website">Personal Website / GitHub</label>
+            <input type="text" id="p-website" placeholder="github.com/johndoe">
+          </div>
+          <div class="form-group">
+            <label for="p-youtube">YouTube Handle (e.g. harshibar)</label>
+            <input type="text" id="p-youtube" placeholder="harshibar">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Summary & Target JD -->
+      <div class="resume-tab-pane" id="tab-summary">
+        <div class="form-group">
+          <label for="r-summary">Professional Summary</label>
+          <textarea id="r-summary" placeholder="A short 3-4 sentence overview of your background, strengths, and expertise..."></textarea>
+        </div>
+        <div class="form-group" style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+          <label for="r-jd" style="color: var(--secondary-accent);">Target Job Description (for AI targeting)</label>
+          <textarea id="r-jd" placeholder="Paste the job description you are targeting here. AI will rewrite your summary and experience bullet points to target this specific role."></textarea>
+        </div>
+      </div>
+
+      <!-- Tab 3: Experience -->
+      <div class="resume-tab-pane" id="tab-experience">
+        <div id="experience-container">
+          <!-- Dynamic experience items go here -->
+        </div>
+        <button class="btn btn-outline" id="btn-add-experience" style="margin-top: 10px;">+ Add Experience</button>
+      </div>
+
+      <!-- Tab 4: Education & Skills -->
+      <div class="resume-tab-pane" id="tab-education-skills">
+        <h3 style="margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Education</h3>
+        <div id="education-container">
+          <!-- Dynamic education items go here -->
+        </div>
+
+
+        <h3 style="margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Skills</h3>
+        <div class="form-group">
+          <label for="skill-input">Add Skills</label>
+          <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <input type="text" id="skill-input" placeholder="e.g. Node.js (Press Enter to add)">
+            <button class="btn btn-primary" id="btn-add-skill">Add</button>
+          </div>
+          <div class="skills-tags" id="skills-tags-container">
+            <!-- Dynamic skill tags go here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 5: Projects -->
+      <div class="resume-tab-pane" id="tab-projects">
+        <div id="projects-container">
+          <!-- Dynamic project items go here -->
+        </div>
+        <button class="btn btn-outline" id="btn-add-project" style="margin-top: 10px;">+ Add Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating AI Suggestion button -->
+  <button class="btn-ai-glow" id="btn-ai-suggest">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+    </svg>
+    <span>✨ Improve by AI</span>
+  </button>
+
+  <script src="js/app.js"></script>
+  <script src="js/resume.js"></script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Builder - NextHire</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  
+  <header></header>
+
+  <div class="portfolio-split-container">
+    
+    <!-- Left Panel: Form Customization -->
+    <div class="portfolio-left-panel">
+      <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; padding-bottom: 0;">Portfolio Web Builder</h2>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">Changes update the live preview instantly.</p>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; position: relative;">
+          <button class="btn btn-outline" style="padding: 8px 16px; font-size: 0.88rem;" id="btn-save-portfolio">Save</button>
+          
+          <!-- Dropdown Trigger Button Group -->
+          <div class="dropdown-container" style="position: relative; display: inline-block;">
+            <button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.88rem; display: flex; align-items: center; gap: 6px;" id="btn-download-trigger" type="button">
+              <span>Download</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" viewBox="0 0 16 16" style="margin-top: 1px;">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="download-dropdown" style="display: none; position: absolute; right: 0; top: 100%; background-color: var(--card-bg); min-width: 210px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1000; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 6px; overflow: hidden; animation: fadeIn 0.15s ease-out;">
+              <a href="#" id="btn-download-html" style="color: var(--text-color); padding: 12px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: background 0.2s;">
+                <span style="font-size: 1.1rem;">📄</span> Download Single HTML
+              </a>
+              <a href="#" id="btn-download-zip" style="color: var(--text-color); padding: 12px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: background 0.2s; border-top: 1px solid var(--border-color);">
+                <span style="font-size: 1.1rem;">📦</span> Download Source ZIP
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form id="portfolio-form" onsubmit="event.preventDefault();">
+        
+        <!-- Resume Sync Toggle Switch -->
+        <div class="sync-toggle-container" style="background: #f8fafc; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; flex-direction: column;">
+            <label for="syncResume" style="font-size: 0.9rem; font-weight: 600; color: var(--primary-accent); margin-bottom: 2px; text-transform: none; letter-spacing: normal;">Sync with Resume</label>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Automatically inherit Name, Bio, Skills, and Projects.</span>
+          </div>
+          <input type="checkbox" id="syncResume" checked style="width: 20px; height: 20px; cursor: pointer;">
+        </div>
+
+        <!-- Section: Profile Details -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">About Me</h3>
+          <div class="form-group">
+            <label for="port-fullname">Full Name</label>
+            <div class="sync-banner" style="display: none; font-size: 0.8rem; color: var(--primary-accent); margin-bottom: 5px;">
+              📎 Pulled from your resume – <a href="resume.html" style="font-weight: 600; text-decoration: underline;">edit here</a>
+            </div>
+            <input type="text" id="port-fullname" placeholder="Jane Doe" class="live-update">
+          </div>
+          <div class="form-group">
+            <label for="profilePhotoInput">Profile Photo</label>
+            <input type="file" id="profilePhotoInput" accept="image/*" style="border: none; padding: 5px 0;">
+            <img id="profile-photo-preview" class="thumbnail" style="display: none; width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-top: 10px; border: 2px solid var(--border-color);">
+          </div>
+          <div class="form-group">
+            <label for="port-tagline">Professional Tagline</label>
+            <input type="text" id="port-tagline" placeholder="Full-Stack Engineer & Product Enthusiast" class="live-update">
+          </div>
+          <div class="form-group">
+            <label for="port-bio">Short Bio</label>
+            <div class="sync-banner" style="display: none; font-size: 0.8rem; color: var(--primary-accent); margin-bottom: 5px;">
+              📎 Pulled from your resume – <a href="resume.html" style="font-weight: 600; text-decoration: underline;">edit here</a>
+            </div>
+            <textarea id="port-bio" placeholder="Write a short summary introducing your professional experience, goals, and passions..." class="live-update" style="min-height: 80px;"></textarea>
+          </div>
+          <div class="form-group" style="margin-top: 10px;">
+            <button class="btn btn-outline" id="btn-portfolio-ai-suggest" type="button" style="padding: 6px 12px; font-size: 0.82rem; display: flex; align-items: center; gap: 6px;">
+              <span>✨ Improve by AI</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section: Custom Theme Options -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Theme Design</h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="port-primary-color">Primary Accent</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="color" id="port-primary-color" value="#d2bbff" class="live-update" style="width: 45px; height: 45px; padding: 2px; cursor: pointer; border-radius: 6px;">
+                <input type="text" id="port-primary-color-text" value="#d2bbff" class="live-update" style="flex: 1;" placeholder="#d2bbff">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="port-secondary-color">Secondary Accent</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="color" id="port-secondary-color" value="#bec6e0" class="live-update" style="width: 45px; height: 45px; padding: 2px; cursor: pointer; border-radius: 6px;">
+                <input type="text" id="port-secondary-color-text" value="#bec6e0" class="live-update" style="flex: 1;" placeholder="#bec6e0">
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="port-tertiary-color">Tertiary Accent</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="color" id="port-tertiary-color" value="#3cddc7" class="live-update" style="width: 45px; height: 45px; padding: 2px; cursor: pointer; border-radius: 6px;">
+                <input type="text" id="port-tertiary-color-text" value="#3cddc7" class="live-update" style="flex: 1;" placeholder="#3cddc7">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="port-bg-color">Background Color</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="color" id="port-bg-color" value="#101415" class="live-update" style="width: 45px; height: 45px; padding: 2px; cursor: pointer; border-radius: 6px;">
+                <input type="text" id="port-bg-color-text" value="#101415" class="live-update" style="flex: 1;" placeholder="#101415">
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label for="port-card-style">Card Style</label>
+              <select id="port-card-style" class="live-update">
+                <option value="glassmorphic">Glassmorphic (Blurred)</option>
+                <option value="bordered">Simple Outline</option>
+                <option value="glowing">Accent Glow</option>
+                <option value="flat">Solid Surface</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="port-font">Font Family</label>
+              <select id="port-font" class="live-update">
+                <option value="Geist">Geist (Modern Clean)</option>
+                <option value="Outfit">Outfit (Geometric Modern)</option>
+                <option value="Inter">Inter (Sans-Serif)</option>
+                <option value="Space Mono">Space Mono (Coding Style)</option>
+                <option value="Playfair Display">Playfair Display (Elegant Serif)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Social Links -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Social Profiles</h3>
+          <div class="form-group">
+            <label for="port-github">GitHub Handle / URL</label>
+            <input type="text" id="port-github" placeholder="github.com/janedoe" class="live-update">
+          </div>
+          <div class="form-group">
+            <label for="port-linkedin">LinkedIn Handle / URL</label>
+            <div class="sync-banner" style="display: none; font-size: 0.8rem; color: var(--primary-accent); margin-bottom: 5px;">
+              📎 Pulled from your resume – <a href="resume.html" style="font-weight: 600; text-decoration: underline;">edit here</a>
+            </div>
+            <input type="text" id="port-linkedin" placeholder="linkedin.com/in/janedoe" class="live-update">
+          </div>
+          <div class="form-group">
+            <label for="port-twitter">Twitter Handle / URL</label>
+            <input type="text" id="port-twitter" placeholder="twitter.com/janedoe" class="live-update">
+          </div>
+          <div class="form-group">
+            <label for="port-youtube">YouTube Handle / URL</label>
+            <div class="sync-banner" style="display: none; font-size: 0.8rem; color: var(--primary-accent); margin-bottom: 5px;">
+              📎 Pulled from your resume – <a href="resume.html" style="font-weight: 600; text-decoration: underline;">edit here</a>
+            </div>
+            <input type="text" id="port-youtube" placeholder="youtube.com/c/janedoe" class="live-update">
+          </div>
+        </div>
+
+        <!-- Section: Statistics Counters -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Statistics Counters</h3>
+          <div id="stats-inputs-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Stat 1 Value</label>
+              <input type="text" id="stat-val-0" placeholder="e.g. 2+" class="live-update">
+              <label style="margin-top: 5px; font-size: 0.75rem;">Label</label>
+              <input type="text" id="stat-lbl-0" placeholder="e.g. Years Exp." class="live-update" style="margin-bottom: 10px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Stat 2 Value</label>
+              <input type="text" id="stat-val-1" placeholder="e.g. 15+" class="live-update">
+              <label style="margin-top: 5px; font-size: 0.75rem;">Label</label>
+              <input type="text" id="stat-lbl-1" placeholder="e.g. Projects" class="live-update" style="margin-bottom: 10px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Stat 3 Value</label>
+              <input type="text" id="stat-val-2" placeholder="e.g. 500+" class="live-update">
+              <label style="margin-top: 5px; font-size: 0.75rem;">Label</label>
+              <input type="text" id="stat-lbl-2" placeholder="e.g. DSA Solved" class="live-update" style="margin-bottom: 10px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Stat 4 Value</label>
+              <input type="text" id="stat-val-3" placeholder="e.g. 10+" class="live-update">
+              <label style="margin-top: 5px; font-size: 0.75rem;">Label</label>
+              <input type="text" id="stat-lbl-3" placeholder="e.g. Certifications" class="live-update" style="margin-bottom: 10px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Categorized Skill Cards -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Categorized Skill Cards</h3>
+          <div class="sync-banner" style="display: none; font-size: 0.8rem; color: var(--primary-accent); margin-bottom: 10px;">
+            📎 Synced and grouped from resume skills.
+          </div>
+          <div id="skill-cats-container" style="display: flex; flex-direction: column; gap: 15px;">
+            <div class="dynamic-item-card" style="padding: 12px; margin-bottom: 0;">
+              <label style="color: var(--primary-accent); font-size: 0.82rem;">Category 1 Name</label>
+              <input type="text" id="skill-cat-name-0" placeholder="e.g. Frontend Mastery" class="live-update">
+              <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 10px; margin-top: 8px;">
+                <div>
+                  <label style="font-size: 0.75rem;">%</label>
+                  <input type="number" id="skill-cat-pct-0" placeholder="95" min="1" max="100" class="live-update">
+                </div>
+                <div>
+                  <label style="font-size: 0.75rem;">Skills (comma-separated)</label>
+                  <input type="text" id="skill-cat-tags-0" placeholder="React, HTML5, CSS3" class="live-update">
+                </div>
+              </div>
+            </div>
+            <div class="dynamic-item-card" style="padding: 12px; margin-bottom: 0;">
+              <label style="color: var(--primary-accent); font-size: 0.82rem;">Category 2 Name</label>
+              <input type="text" id="skill-cat-name-1" placeholder="e.g. Backend & DB" class="live-update">
+              <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 10px; margin-top: 8px;">
+                <div>
+                  <label style="font-size: 0.75rem;">%</label>
+                  <input type="number" id="skill-cat-pct-1" placeholder="88" min="1" max="100" class="live-update">
+                </div>
+                <div>
+                  <label style="font-size: 0.75rem;">Skills (comma-separated)</label>
+                  <input type="text" id="skill-cat-tags-1" placeholder="Node.js, MongoDB, SQL" class="live-update">
+                </div>
+              </div>
+            </div>
+            <div class="dynamic-item-card" style="padding: 12px; margin-bottom: 0;">
+              <label style="color: var(--primary-accent); font-size: 0.82rem;">Category 3 Name</label>
+              <input type="text" id="skill-cat-name-2" placeholder="e.g. Logic & Ops" class="live-update">
+              <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 10px; margin-top: 8px;">
+                <div>
+                  <label style="font-size: 0.75rem;">%</label>
+                  <input type="number" id="skill-cat-pct-2" placeholder="92" min="1" max="100" class="live-update">
+                </div>
+                <div>
+                  <label style="font-size: 0.75rem;">Skills (comma-separated)</label>
+                  <input type="text" id="skill-cat-tags-2" placeholder="Java, DSA, Git" class="live-update">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Skills -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Skills List</h3>
+          <div class="form-group">
+            <label for="port-skill-input">Add Skills</label>
+            <div class="sync-banner" style="display: none; font-size: 0.8rem; color: var(--primary-accent); margin-bottom: 5px;">
+              📎 Pulled from your resume – <a href="resume.html" style="font-weight: 600; text-decoration: underline;">edit here</a>
+            </div>
+            <div id="skills-input-area" style="display: flex; gap: 10px; margin-bottom: 10px;">
+              <input type="text" id="port-skill-input" placeholder="e.g. React">
+              <button class="btn btn-primary" id="port-btn-add-skill" type="button" style="padding: 0 15px;">Add</button>
+            </div>
+            <div class="skills-tags" id="port-skills-tags-container">
+              <!-- Skills tags render here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Education -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Education</h3>
+          <div class="sync-banner" style="display: none; font-size: 0.8rem; color: var(--primary-accent); margin-bottom: 10px;">
+            📎 Pulled from your resume – <a href="resume.html" style="font-weight: 600; text-decoration: underline;">edit here</a>
+          </div>
+          <div id="education-container">
+            <!-- Dynamic education list renders here -->
+          </div>
+        </div>
+
+        <!-- Section: Projects -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">Projects Showcase</h3>
+          <div class="sync-banner" style="display: none; font-size: 0.8rem; color: var(--primary-accent); margin-bottom: 10px;">
+            📎 Pulled from your resume – <a href="resume.html" style="font-weight: 600; text-decoration: underline;">edit here</a>
+          </div>
+          <div id="projects-container">
+            <!-- Dynamic project list renders here -->
+          </div>
+          <button class="btn btn-outline btn-full" id="btn-add-project" type="button" style="margin-top: 10px;">+ Add Project</button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Right Panel: Live Frame Preview -->
+    <div class="portfolio-right-panel">
+      <div class="device-frame">
+        <div class="device-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; gap: 6px; align-items: center; width: 80px;">
+            <div class="device-dot red"></div>
+            <div class="device-dot yellow"></div>
+            <div class="device-dot green"></div>
+          </div>
+          <div style="text-align:center; font-size: 0.75rem; color: #777; font-family: monospace; user-select: none; flex-grow: 1;">Live Preview Mockup</div>
+          <div style="display: flex; gap: 10px; align-items: center; justify-content: flex-end; width: 100px;">
+            <button id="btn-toggle-layout" title="Toggle Full Width Preview" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 2px; color: #64748b; transition: color 0.2s;" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 11.5 14h3a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zM12 3.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5zM1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h7A1.5 1.5 0 0 0 10 12.5v-9A1.5 1.5 0 0 0 8.5 2zM1 3.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/>
+              </svg>
+            </button>
+            <button id="btn-fullscreen-iframe" title="View Browser Fullscreen" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 2px; color: #64748b; transition: color 0.2s;" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10.5 0a.5.5 0 0 1 0 1h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1-.5-.5zM1 10.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 1 0zM15 10.5a.5.5 0 0 1-1 0v4a.5.5 0 0 1-.5.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 1 .5-.5z"/>
+              </svg>
+            </button>
+            <button id="btn-open-tab" title="Open in New Tab" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 2px; color: #64748b; transition: color 0.2s;" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <iframe id="portfolio-preview-frame" class="device-preview-iframe" allowfullscreen></iframe>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/portfolio.js"></script>
+</body>
+</html>
